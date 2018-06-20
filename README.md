@@ -1,9 +1,6 @@
-# PHP CORS Proxy
+# Cuyahoga-Proxy
 
-[![Latest Version on Packagist][ico-version]][link-packagist]
-[![Total Downloads][ico-downloads]][link-downloads]
-
-*Formerly known as "PHP Cross Domain (AJAX) Proxy"*
+*Fork of [PHP CORS Proxy](https://github.com/softius/php-cross-domain-proxy)*
 
 PHP CORS Proxy is a simple php script that allows cross domain requests. It can be used to access resources from third party websites when it's not possible to enable CORS on target website i.e. when you don't own that website.
 
@@ -29,12 +26,13 @@ PHP Cors Proxy works with PHP 5.3+ or above.
 ### Author
 
 - [Iacovos Constantinou][link-author]  - softius@gmail.com - https://twitter.com/iacons
+- [Sam Foxman](https://github.com/XMB5)  - samfoxman320@gmail.com
 - See also the list of [contributors][link-contributors] which participated in this project.
 
 
 ### License
 
-PHP CORS Proxy is licensed under GPL-3.0. See `LICENCE.txt` file for further details.
+Cuyahoga-Proxy is licensed under GPL-3.0. See `LICENCE.txt` file for further details.
 
 
 ## Installation
@@ -42,7 +40,7 @@ PHP CORS Proxy is licensed under GPL-3.0. See `LICENCE.txt` file for further det
 **Using composer**
 
 ```
-composer require softius/cors-proxy
+composer require XMB5/Cuyahoga-Proxy
 ```
 
 **Manual installation**
@@ -53,16 +51,17 @@ The proxy is indentionally limited to a single file. All you have to do is to pl
 
 For security reasons don't forget to define all the trusted domains / URLs into top section of `proxy.php` file:
 
-``` JAVASCRIPT
+``` PHP
 $valid_requests = array(
     'http://www.domainA.com/',
     'http://www.domainB.com/path-to-services/service-a'
 );
 ```
 
-**Note**: There is currently ongoing work to allow configuration outside the `proxy.php` 
-
 ## Usage
+
+**The usage section is outdated and none of the examples work. I will update them soon.**
+
 It is possible to initiate a cross domain request either by providing the `X-Proxy-URL` header or by passing a special `GET` parameter. The former method is strongly suggested since it doesn't modify the request query. Also, the request looks more clear and easier to understand.
 
 ### Using headers
@@ -111,4 +110,4 @@ curl -v "http://yourdomain.com/proxy.php?csurl=http://www.cross-domain.com/&para
 [link-packagist]: https://packagist.org/packages/softius/cors-proxy
 [link-downloads]: https://packagist.org/packages/softius/cors-proxy
 [link-author]: https://github.com/softius
-[link-contributors]: ../../contributors
+[link-contributors]: https://github.com/softius/php-cross-domain-proxy/graphs/contributors
