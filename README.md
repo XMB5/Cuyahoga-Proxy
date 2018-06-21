@@ -116,10 +116,5 @@ fetch(url, {
 });
 ```
 
-[ico-version]: https://img.shields.io/packagist/v/softius/cors-proxy.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/softius/cors-proxy.svg?style=flat-square
-
-[link-packagist]: https://packagist.org/packages/softius/cors-proxy
-[link-downloads]: https://packagist.org/packages/softius/cors-proxy
 [link-author]: https://github.com/softius
-[link-contributors]: https://github.com/softius/php-cross-domain-proxy/graphs/contributors
+[link-contributors]: https://github.com/XMB5/Cuyahoga-Proxy/graphs/contributors
