@@ -2,7 +2,7 @@
 
 *Fork of [PHP CORS Proxy](https://github.com/softius/php-cross-domain-proxy)*
 
-PHP CORS Proxy is a simple php script that allows cross domain requests. It can be used to access resources from third party websites when it's not possible to enable CORS on target website i.e. when you don't own that website.
+Cuyahoga-Proxy is a simple php script that allows cross domain requests. It can be used to access resources from third party websites when it's not possible to enable CORS on target website i.e. when you don't own that website.
 
 **Note**: Please check whether this solution is indeed necessary by having a look on [how you can enable CORS on your server](http://enable-cors.org/server.html).
 
@@ -12,22 +12,20 @@ PHP CORS Proxy is a simple php script that allows cross domain requests. It can 
 ### Features
 
 * Acts as a reverse proxy: request headers and data are propagated from proxy to server. Similarly, response headers and data are propagated from proxy to client.
-* Provides support for all methods GET, POST, PUT, DELETE.
-* Provides also support for HTTPS.
+* The proxy can be accessed from any origin (CORS is enabled)
+* Provides support for all HTTP methods
+* Works with HTTPS
 * Requests can be filtered against a list of trusted domains or URLs.
-* External configuration (Work in progress)
-* Error handling i.e. when server is not available (Work in progress)
-* Debugging mode (Work in progress)
 
 ### Requirements
 
-PHP Cors Proxy works with PHP 5.3+ or above.
+Cuyahoga-Proxy requires PHP 5.3+ or above.
 
-### Author
+### Authors
 
-- [Iacovos Constantinou][link-author]  - softius@gmail.com - https://twitter.com/iacons
-- [Sam Foxman](https://github.com/XMB5)  - samfoxman320@gmail.com
-- See also the list of [contributors][link-contributors] which participated in this project.
+- [Iacovos Constantinou][link-author]  - Original Creator
+- [Sam Foxman](https://github.com/XMB5)  - Forked Version Creator
+- Other [contributors][link-contributors]
 
 
 ### License
@@ -45,11 +43,11 @@ composer require XMB5/Cuyahoga-Proxy
 
 **Manual installation**
 
-The proxy is indentionally limited to a single file. All you have to do is to place `proxy.php` under the public folder of your application. 
+The proxy is intentionally limited to a single file. All you have to do is to place `proxy.php` under the public folder of your application. 
 
 ### Configuration
 
-For security reasons don't forget to define all the trusted domains / URLs into top section of `proxy.php` file:
+For security reasons, don't forget to define all the trusted domains / URLs into top section of `proxy.php` file:
 
 ``` PHP
 $valid_requests = array(
@@ -60,48 +58,62 @@ $valid_requests = array(
 
 ## Usage
 
-**The usage section is outdated and none of the examples work. I will update them soon.**
+All request data is sent through query parameters:
+- `url`
+  - the target url
+- `method`
+  - the http method
+- `headers` (optional)
+  - the http headers
+  - query string format (key=value&k=v)
+- `body` (optional)
+  - the request body
+  - base64 encoded
 
-It is possible to initiate a cross domain request either by providing the `X-Proxy-URL` header or by passing a special `GET` parameter. The former method is strongly suggested since it doesn't modify the request query. Also, the request looks more clear and easier to understand.
-
-### Using headers
-
-It is possible to specify the target URL by using the `X-Proxy-URL` header, which might be easier to set with your JavaScript library. For example, if you wanted to automatically use the proxy for external URL targets, for GET and POST requests:
-
-``` JAVASCRIPT
-$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
-    if (options.url.match(/^https?:/)) {
-        options.headers['X-Proxy-URL'] = options.url;
-        options.url = '/proxy.php';
+Full-featured JavaScript example ([jsfiddle](https://jsfiddle.net/4ypa01vd/50/))
+``` JavaScript
+function buildUrl (opts) {
+	var url = opts.proxyUrl + '?url=' + encodeURIComponent(opts.targetUrl);
+	url += '&method=' + encodeURIComponent(opts.method);
+  var formattedHeaders = '';
+  var firstHeader = true;
+  for (var key in opts.headers) {
+    if (opts.headers.hasOwnProperty(key)) {
+      if (firstHeader) {
+        firstHeader = false;
+      } else {
+        formattedHeaders += '&';
+      }
+      formattedHeaders += encodeURIComponent(key) + '=' + encodeURIComponent(opts.headers[key]);
     }
+  }
+  url += '&headers=' + encodeURIComponent(formattedHeaders);
+  if (opts.body) {
+  	url += '&body=' + encodeURIComponent(btoa(opts.body));
+  }
+  return url;
+}
+
+var url = buildUrl({
+	proxyUrl: 'https://shrekismyidol.000webhostapp.com/',
+  targetUrl: 'https://httpbin.org/anything?param=value',
+  method: 'POST',
+  headers: {
+  	'User-Agent': 'Forge 8.8',
+  	'Cookie': 'Monster',
+    'Content-Type': 'text/plain'
+  },
+  body: 'lots of data'
 });
-```
-
-The following example uses `curl`
-
-```
-curl -v -H "X-Proxy-URL: http://cross-domain.com" http://yourdomain.com/proxy.php
-```
 
 
-### Using query
-
-In order to make a cross domain request, just make a request to http://www.yourdomain.com/proxy.php and specify the target URL by using the `csurl` (GET) parameter. Obviously, you can add more parameters according to your needs; note that the rest of the parameters will be used in the cross domain request. For instance, if you are using jQuery:
-
-``` JAVASCRIPT
-$('#target').load(
-    'http://www.yourdomain.com/proxy.php', {
-        csurl: 'http://www.cross-domain.com/',
-        param1: value1,
-        param2: value2
-    }
-);
-```
-
-The following example uses `curl`
-
-```
-curl -v "http://yourdomain.com/proxy.php?csurl=http://www.cross-domain.com/&param1=value1&param2=value2"
+fetch(url, {
+	method: 'POST'
+}).then(res => {
+	return res.text();
+}).then(text => {
+	alert(text);
+});
 ```
 
 [ico-version]: https://img.shields.io/packagist/v/softius/cors-proxy.svg?style=flat-square
