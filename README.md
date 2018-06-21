@@ -73,8 +73,8 @@ All request data is sent through query parameters:
 Full-featured JavaScript example ([jsfiddle](https://jsfiddle.net/4ypa01vd/50/))
 ``` JavaScript
 function buildUrl (opts) {
-	var url = opts.proxyUrl + '?url=' + encodeURIComponent(opts.targetUrl);
-	url += '&method=' + encodeURIComponent(opts.method);
+  var url = opts.proxyUrl + '?url=' + encodeURIComponent(opts.targetUrl);
+  url += '&method=' + encodeURIComponent(opts.method);
   var formattedHeaders = '';
   var firstHeader = true;
   for (var key in opts.headers) {
