@@ -86,32 +86,52 @@ All request data is sent through query parameters:
   - the request body
   - base64 encoded
 
-Full-featured JavaScript example ([jsfiddle](https://jsfiddle.net/4ypa01vd/50/))
+Full-featured JavaScript example ([jsfiddle](https://jsfiddle.net/4ypa01vd/54/))
 ``` JavaScript
-function buildUrl (opts) {
-  var url = opts.proxyUrl + '?url=' + encodeURIComponent(opts.targetUrl);
-  url += '&method=' + encodeURIComponent(opts.method);
-  var formattedHeaders = '';
-  var firstHeader = true;
-  for (var key in opts.headers) {
-    if (opts.headers.hasOwnProperty(key)) {
-      if (firstHeader) {
-        firstHeader = false;
-      } else {
-        formattedHeaders += '&';
-      }
-      formattedHeaders += encodeURIComponent(key) + '=' + encodeURIComponent(opts.headers[key]);
+//change an object {key:'value'} to a query string 'key=value'
+function objectToQueryString (object) {
+    let queryString = '';
+    let firstParam = true;
+    for (let key in object) {
+        if (object.hasOwnProperty(key)) {
+            if (firstParam) {
+                firstParam = false;
+            } else {
+                queryString += '&';
+            }
+            queryString += encodeURIComponent(key) + '=' + encodeURIComponent(object[key]);
+        }
     }
+    return queryString;
+}
+
+/*
+Construct a URL with all the properly encoded query parameters
+opts: {
+  proxyUrl: string,
+  targetUrl: string,
+  method: string,
+  headers: {
+    key: 'value'
   }
-  url += '&headers=' + encodeURIComponent(formattedHeaders);
-  if (opts.body) {
-  	url += '&body=' + encodeURIComponent(btoa(opts.body));
-  }
-  return url;
+  body: string or plain object
+}
+*/
+function buildUrl (opts) {
+    let url = opts.proxyUrl + '?url=' + encodeURIComponent(opts.targetUrl);
+    url += '&method=' + encodeURIComponent(opts.method);
+    url += '&headers=' + encodeURIComponent(objectToQueryString(opts.headers));
+    if (opts.body) {
+        if (opts.body.constructor === Object) {
+            opts.body = objectToQueryString(opts.body);
+        }
+        url += '&body=' + encodeURIComponent(btoa(opts.body));
+    }
+    return url;
 }
 
 var url = buildUrl({
-	proxyUrl: 'https://shrekismyidol.000webhostapp.com/',
+  proxyUrl: 'https://shrekismyidol.000webhostapp.com/',
   targetUrl: 'https://httpbin.org/anything?param=value',
   method: 'POST',
   headers: {
