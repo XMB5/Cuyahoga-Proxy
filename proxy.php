@@ -79,7 +79,9 @@ if (isset($_GET['body'])) {
 }
 
 $request_headers_map = array();
-parse_str($_GET['headers'], $request_headers_map);
+if (isset($_GET['headers'])) {
+    parse_str($_GET['headers'], $request_headers_map);
+}
 
 //convert request headers to key: value format
 $request_headers = array();
